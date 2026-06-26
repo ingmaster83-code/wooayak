@@ -114,6 +114,23 @@ layout: default
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
 
+  <!-- 원본 정보 링크 -->
+  <div class="drug-source-links">
+    <span class="source-label">공식 출처</span>
+    <a href="https://nedrug.mfds.go.kr/pbp/CCBBB01/getItemDetail?itemSeq={{ page.itemSeq }}" target="_blank" rel="noopener" class="source-link">
+      🏛️ 식약처 의약품 정보
+    </a>
+    <a href="https://www.health.kr/searchDrug/result_drug.asp?drug_cd={{ page.itemSeq }}" target="_blank" rel="noopener" class="source-link">
+      📖 약학정보원
+    </a>
+  </div>
+
+  <!-- 유사 약품 -->
+  <div class="similar-drugs" id="similarSection" style="display:none">
+    <h2 class="similar-title">동일 성분 유사 약품</h2>
+    <div class="drug-grid" id="similarGrid"></div>
+  </div>
+
   <!-- Schema.org Drug 마크업 -->
   <script type="application/ld+json">
   {
@@ -141,4 +158,49 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
   });
 });
+
+// 유사 약품 (동일 성분 키워드 매칭)
+(async () => {
+  const currentSlug = '{{ page.slug }}';
+  const currentName = {{ page.itemName | jsonify }};
+  const currentEfcy = {{ page.efcyQesitm | default: "" | jsonify }};
+
+  // 성분명 추출: 괄호 안 성분명 또는 약품명에서 핵심 단어
+  function extractKeywords(name, efcy) {
+    const parenMatch = name.match(/[（(]([^）)]+)[）)]/);
+    if (parenMatch) return [parenMatch[1].trim()];
+    // 효능에서 첫 번째 주요 성분 키워드 추출
+    const words = (efcy || '').split(/[,·\s]+/).filter(w => w.length >= 3).slice(0, 3);
+    return words.length ? words : [name.slice(0, 4)];
+  }
+
+  const keywords = extractKeywords(currentName, currentEfcy);
+
+  try {
+    const resp = await fetch('/search_index.json');
+    const all = await resp.json();
+    const drugs = all.filter(d => d.type === 'drug' && d.slug !== currentSlug);
+
+    const similar = drugs.filter(d => {
+      const text = (d.itemName + ' ' + (d.efcyQesitm || '')).toLowerCase();
+      return keywords.some(kw => text.includes(kw.toLowerCase()));
+    }).slice(0, 6);
+
+    if (similar.length === 0) return;
+
+    const grid = document.getElementById('similarGrid');
+    grid.innerHTML = similar.map(d => {
+      const img = d.itemImage
+        ? `<img class="drug-card-image" src="${d.itemImage}" alt="${d.itemName}" loading="lazy">`
+        : `<div class="drug-card-no-image">💊</div>`;
+      return `<a class="drug-card" href="/drug/${d.slug}/">
+        ${img}
+        <div class="drug-card-name">${d.itemName}</div>
+        <div class="drug-card-company">${d.entpName || ''}</div>
+      </a>`;
+    }).join('');
+
+    document.getElementById('similarSection').style.display = 'block';
+  } catch(e) {}
+})();
 </script>
