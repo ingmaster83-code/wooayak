@@ -62,6 +62,114 @@ description: 이 약 뭐야? 제품명, 효능, 성분으로 일반의약품 정
     <p style="font-size:.85rem;margin-top:6px">다른 키워드로 검색해보세요</p>
   </div>
 
+  <!-- ===== 홈 섹션 (검색 전에만 표시) ===== -->
+  <div id="homeSections">
+
+    <!-- 1. 인기 약품 Top 20 -->
+    <section class="home-section">
+      <h2 class="home-section-title">많이 찾는 약</h2>
+      <div class="popular-grid">
+        <a class="popular-chip" href="/drug/202106092-타이레놀정500밀리그람아세트아미노펜/">💊 타이레놀</a>
+        <a class="popular-chip" href="/drug/196800036-판콜에이내복액/">💊 판콜</a>
+        <a class="popular-chip" href="/drug/201908295-게보린소프트연질캡슐/">💊 게보린</a>
+        <a class="popular-chip" href="/drug/198601920-어린이부루펜시럽이부프로펜/">💊 부루펜</a>
+        <a class="popular-chip" href="/drug/202302993-이지엔6이브정/">💊 이지엔6</a>
+        <a class="popular-chip" href="/drug/199900926-훼스탈골드정/">💊 훼스탈</a>
+        <a class="popular-chip" href="/drug/198700405-베아제정/">💊 베아제</a>
+        <a class="popular-chip" href="/drug/199400202-판피린티정/">💊 판피린</a>
+        <a class="popular-chip" href="/drug/202401290-화이투벤코프시럽/">💊 화이투벤</a>
+        <a class="popular-chip" href="/drug/199600275-케토톱겔케토프로펜/">💊 케토톱</a>
+        <a class="popular-chip" href="/drug/197000037-아로나민골드정/">💊 아로나민</a>
+        <a class="popular-chip" href="/drug/197000040-대웅우루사연질캡슐/">💊 우루사</a>
+        <a class="popular-chip" href="/drug/198900667-까스활명수큐액/">💊 까스활명수</a>
+        <a class="popular-chip" href="/drug/198901605-영일염산암브록솔정/">💊 암브록솔</a>
+        <a class="popular-chip" href="/drug/200203626-구미포비돈요오드액/">💊 포비돈요오드</a>
+        <a class="popular-chip" href="/drug/200903973-마데카솔케어연고/">💊 마데카솔</a>
+        <a class="popular-chip" href="/drug/200300547-후시딘히드로크림/">💊 후시딘</a>
+        <a class="popular-chip" href="/drug/202106954-타이레놀콜드에스정/">💊 타이레놀콜드</a>
+        <a class="popular-chip" href="/drug/198700405-베아제정/">💊 소화제</a>
+        <a class="popular-chip" href="/drug/199900926-훼스탈골드정/">💊 소화효소제</a>
+      </div>
+    </section>
+
+    <!-- 2. 카테고리별 찾기 -->
+    <section class="home-section">
+      <h2 class="home-section-title">카테고리별 찾기</h2>
+      <div class="category-grid">
+        <a class="category-card" href="/?cat=해열진통" data-cat="해열진통">
+          <span class="cat-icon">🌡️</span>
+          <span class="cat-name">해열·진통</span>
+          <span class="cat-count" id="cnt-해열진통">-</span>
+        </a>
+        <a class="category-card" href="/?cat=소화" data-cat="소화">
+          <span class="cat-icon">💊</span>
+          <span class="cat-name">소화제</span>
+          <span class="cat-count" id="cnt-소화">-</span>
+        </a>
+        <a class="category-card" href="/?cat=감기" data-cat="감기">
+          <span class="cat-icon">🤧</span>
+          <span class="cat-name">감기약</span>
+          <span class="cat-count" id="cnt-감기">-</span>
+        </a>
+        <a class="category-card" href="/?cat=피부" data-cat="피부">
+          <span class="cat-icon">🧴</span>
+          <span class="cat-name">피부·외용</span>
+          <span class="cat-count" id="cnt-피부">-</span>
+        </a>
+        <a class="category-card" href="/?cat=비타민" data-cat="비타민">
+          <span class="cat-icon">💛</span>
+          <span class="cat-name">비타민</span>
+          <span class="cat-count" id="cnt-비타민">-</span>
+        </a>
+        <a class="category-card" href="/?cat=눈" data-cat="눈">
+          <span class="cat-icon">👁️</span>
+          <span class="cat-name">안약</span>
+          <span class="cat-count" id="cnt-눈">-</span>
+        </a>
+        <a class="category-card" href="/?cat=소독" data-cat="소독">
+          <span class="cat-icon">🩺</span>
+          <span class="cat-name">소독·상처</span>
+          <span class="cat-count" id="cnt-소독">-</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 3. 알약 역검색 배너 -->
+    <section class="identify-banner">
+      <div class="identify-banner-inner">
+        <div>
+          <p class="identify-banner-label">약 이름 모를 때</p>
+          <h2 class="identify-banner-title">모양·색상으로 약 찾기</h2>
+          <p class="identify-banner-desc">알약의 모양, 색상, 각인 문자로 약품을 역검색할 수 있습니다</p>
+        </div>
+        <a href="/identify/" class="identify-banner-btn">역검색 시작 →</a>
+      </div>
+    </section>
+
+    <!-- 4. 이용 안내 -->
+    <section class="home-section">
+      <h2 class="home-section-title">이약뭐야 이용 안내</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-icon">🏛️</span>
+          <h3>식약처 공식 데이터 기반</h3>
+          <p>식품의약품안전처 공공데이터 포털의 e약은요·낱알식별 정보를 기반으로 제공합니다.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">💊</span>
+          <h3>일반의약품 및 건강기능식품</h3>
+          <p>의약품 4,700여 종과 건강기능식품 1,300여 종의 효능, 용법, 주의사항을 확인할 수 있습니다.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">⚕️</span>
+          <h3>전문 상담을 우선하세요</h3>
+          <p>본 정보는 참고용입니다. 정확한 복약 정보는 반드시 의사·약사와 상담하세요.</p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /homeSections -->
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>

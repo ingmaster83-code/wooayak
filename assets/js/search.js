@@ -26,10 +26,21 @@ async function loadIndex() {
     allDrugs = await resp.json();
     rebuildFuse();
     renderRecent();
-    const q = new URLSearchParams(location.search).get('q');
-    const tab = new URLSearchParams(location.search).get('tab');
+    updateCategoryCounts();
+
+    const params = new URLSearchParams(location.search);
+    const q   = params.get('q');
+    const tab = params.get('tab');
+    const cat = params.get('cat');
+
     if (tab === 'supplement') switchTab('supplement');
-    if (q) { document.getElementById('searchInput').value = q; doSearch(q); }
+    if (cat) {
+      activeCat = cat;
+      const btn = document.querySelector(`.cat-btn[data-cat="${cat}"]`);
+      if (btn) { document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+    }
+    if (q) { document.getElementById('searchInput').value = q; doSearch(q, activeCat); }
+    else if (cat) { doSearch('', cat); }
   } catch (e) {
     console.error('검색 인덱스 로드 실패', e);
   }
@@ -48,6 +59,17 @@ function rebuildFuse() {
       includeScore: true,
       minMatchCharLength: 1,
     });
+}
+
+function updateCategoryCounts() {
+  const drugs = allDrugs.filter(d => d.type === 'drug');
+  Object.entries(CAT_KEYWORDS).forEach(([cat, kws]) => {
+    const count = drugs.filter(d =>
+      kws.some(kw => (d.efcyQesitm || '').includes(kw) || (d.itemName || '').includes(kw))
+    ).length;
+    const el = document.getElementById('cnt-' + cat);
+    if (el) el.textContent = count.toLocaleString() + '개';
+  });
 }
 
 function doSearch(query, cat = '') {
@@ -74,15 +96,22 @@ function doSearch(query, cat = '') {
   renderGrid(results.slice(0, MAX_RESULTS), query, results.length);
 }
 
+function setHomeSectionsVisible(visible) {
+  const el = document.getElementById('homeSections');
+  if (el) el.style.display = visible ? 'block' : 'none';
+}
+
 function renderGrid(items, query = '', total = 0) {
   const grid = document.getElementById('drugGrid');
   const header = document.getElementById('resultsHeader');
   const empty = document.getElementById('emptyState');
+  const isSearching = query || activeCat;
 
-  if (items.length === 0 && (query || activeCat)) {
+  if (items.length === 0 && isSearching) {
     grid.innerHTML = '';
     header.style.display = 'none';
     empty.style.display = 'block';
+    setHomeSectionsVisible(false);
     return;
   }
   empty.style.display = 'none';
@@ -91,8 +120,10 @@ function renderGrid(items, query = '', total = 0) {
     header.style.display = 'flex';
     document.getElementById('resultsCount').textContent = `총 ${total}건`;
     document.getElementById('resultsQuery').textContent = query ? `"${query}" 검색 결과` : '';
+    setHomeSectionsVisible(false);
   } else {
     header.style.display = 'none';
+    setHomeSectionsVisible(true);
   }
 
   grid.innerHTML = items.map(d => {
@@ -149,7 +180,6 @@ function switchTab(type) {
   document.querySelectorAll('.main-tab').forEach(b => {
     b.classList.toggle('active', b.dataset.type === type);
   });
-  // 카테고리 필터: 건기식은 숨김
   const catFilter = document.getElementById('categoryFilter');
   if (catFilter) catFilter.style.display = type === 'drug' ? 'flex' : 'none';
   activeCat = '';
@@ -162,6 +192,20 @@ function switchTab(type) {
 
 document.querySelectorAll('.main-tab').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.type));
+});
+
+// 카테고리 카드 클릭 (홈 섹션)
+document.querySelectorAll('.category-card').forEach(card => {
+  card.addEventListener('click', e => {
+    e.preventDefault();
+    const cat = card.dataset.cat;
+    activeCat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`.cat-btn[data-cat="${cat}"]`);
+    if (btn) btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    doSearch('', cat);
+  });
 });
 
 // 이벤트

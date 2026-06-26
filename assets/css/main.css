@@ -383,6 +383,100 @@ img { max-width: 100%; }
   color: var(--text);
 }
 
+/* ===== 홈 섹션 ===== */
+.home-section { margin: 48px 0; }
+.home-section-title {
+  font-size: 1.15rem; font-weight: 700; margin-bottom: 16px;
+  color: var(--text); display: flex; align-items: center; gap: 8px;
+}
+.home-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* 인기 약품 칩 */
+.popular-grid {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.popular-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 16px; border-radius: 20px;
+  background: var(--white); border: 1.5px solid var(--border);
+  font-size: .88rem; color: var(--text); text-decoration: none;
+  transition: all .2s; white-space: nowrap;
+}
+.popular-chip:hover {
+  border-color: var(--primary); background: var(--primary-light);
+  color: var(--primary); text-decoration: none;
+}
+
+/* 카테고리 그리드 */
+.category-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+.category-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; padding: 20px 12px;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--radius); text-decoration: none; color: var(--text);
+  transition: all .2s; text-align: center;
+}
+.category-card:hover {
+  border-color: var(--primary); background: var(--primary-light);
+  text-decoration: none; transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.cat-icon { font-size: 1.8rem; }
+.cat-name { font-size: .9rem; font-weight: 600; color: var(--text); }
+.cat-count { font-size: .78rem; color: var(--text-muted); }
+
+/* 역검색 배너 */
+.identify-banner {
+  background: linear-gradient(135deg, #1a6a8a 0%, #2E86AB 100%);
+  border-radius: var(--radius); margin: 48px 0; overflow: hidden;
+}
+.identify-banner-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 32px 36px; gap: 20px; flex-wrap: wrap;
+}
+.identify-banner-label {
+  font-size: .82rem; color: rgba(255,255,255,.75);
+  font-weight: 600; letter-spacing: .05em; margin-bottom: 6px;
+}
+.identify-banner-title {
+  font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 6px;
+}
+.identify-banner-desc { font-size: .88rem; color: rgba(255,255,255,.8); }
+.identify-banner-btn {
+  display: inline-block; padding: 14px 28px;
+  background: #fff; color: var(--primary-dark);
+  border-radius: 8px; font-weight: 700; font-size: .95rem;
+  text-decoration: none; white-space: nowrap; flex-shrink: 0;
+  transition: all .2s;
+}
+.identify-banner-btn:hover {
+  background: var(--primary-light); text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* 이용 안내 */
+.info-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.info-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px 20px; text-align: center;
+}
+.info-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+.info-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+.info-card p { font-size: .84rem; color: var(--text-muted); line-height: 1.7; }
+
+@media (max-width: 640px) {
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .info-grid { grid-template-columns: 1fr; }
+  .identify-banner-inner { flex-direction: column; align-items: flex-start; }
+  .identify-banner-btn { width: 100%; text-align: center; }
+}
+
 /* ===== 유틸 ===== */
 .loading { text-align: center; padding: 48px; color: var(--text-muted); }
 .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
