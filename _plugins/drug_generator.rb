@@ -6,22 +6,40 @@ module Jekyll
     priority :normal
 
     def generate(site)
-      drugs_file = File.join(site.source, '_data', 'drugs.json')
-      return unless File.exist?(drugs_file)
+      drugs       = load_json(site, '_data/drugs.json')
+      supplements = load_json(site, '_data/supplements.json')
 
-      drugs = JSON.parse(File.read(drugs_file, encoding: 'utf-8'))
-      Jekyll.logger.info "DrugGenerator:", "#{drugs.size}개 약품 페이지 생성 중..."
-
-      drugs.each do |drug|
-        next if drug['slug'].to_s.strip.empty?
-
-        site.pages << DrugPage.new(site, drug)
+      if drugs.any?
+        Jekyll.logger.info "DrugGenerator:", "#{drugs.size}개 약품 페이지 생성 중..."
+        drugs.each do |drug|
+          next if drug['slug'].to_s.strip.empty?
+          site.pages << DrugPage.new(site, drug)
+        end
       end
 
-      # 검색 인덱스 생성
-      site.pages << SearchIndexPage.new(site, drugs)
+      if supplements.any?
+        Jekyll.logger.info "DrugGenerator:", "#{supplements.size}개 건강기능식품 페이지 생성 중..."
+        supplements.each do |sup|
+          next if sup['slug'].to_s.strip.empty?
+          site.pages << SupplementPage.new(site, sup)
+        end
+      end
 
-      Jekyll.logger.info "DrugGenerator:", "완료"
+      # 통합 검색 인덱스 생성
+      site.pages << SearchIndexPage.new(site, drugs, supplements)
+
+      Jekyll.logger.info "DrugGenerator:", "완료 (약품 #{drugs.size} + 건강기능식품 #{supplements.size})"
+    end
+
+    private
+
+    def load_json(site, path)
+      file = File.join(site.source, path)
+      return [] unless File.exist?(file)
+      JSON.parse(File.read(file, encoding: 'utf-8'))
+    rescue => e
+      Jekyll.logger.warn "DrugGenerator:", "#{path} 로드 실패: #{e.message}"
+      []
     end
   end
 
@@ -34,20 +52,16 @@ module Jekyll
 
       self.process(@name)
       self.read_yaml(File.join(@base, '_layouts'), 'drug.html')
-
-      # front matter에 약품 데이터 주입
       self.data.merge!(drug)
       self.data['layout']      = 'drug'
       self.data['title']       = "#{drug['itemName']} 효능 용법 부작용"
-      self.data['description'] = build_description(drug)
+      self.data['description'] = build_drug_desc(drug)
     end
 
     private
 
-    def build_description(drug)
-      # seoDescription이 있으면 우선 사용
+    def build_drug_desc(drug)
       return drug['seoDescription'] if drug['seoDescription'].to_s.length > 10
-
       efcy = (drug['efcyQesitm'] || '').strip[0, 80]
       name = drug['itemName'] || ''
       comp = drug['entpName'] || ''
@@ -57,22 +71,46 @@ module Jekyll
     end
   end
 
+  class SupplementPage < Page
+    def initialize(site, sup)
+      @site = site
+      @base = site.source
+      @dir  = "supplement/#{sup['slug']}"
+      @name = 'index.html'
+
+      self.process(@name)
+      self.read_yaml(File.join(@base, '_layouts'), 'supplement.html')
+      self.data.merge!(sup)
+      self.data['layout']      = 'supplement'
+      self.data['title']       = "#{sup['itemName']} 기능성 효능 섭취법"
+      self.data['description'] = build_sup_desc(sup)
+    end
+
+    private
+
+    def build_sup_desc(sup)
+      return sup['seoDescription'] if sup['seoDescription'].to_s.length > 10
+      name   = sup['itemName'] || ''
+      fnclty = (sup['primaryFnclty'] || '').strip[0, 80]
+      desc   = "#{name} 건강기능식품의 기능성, 일일 섭취량, 주의사항을 확인하세요."
+      desc  += " #{fnclty}" if fnclty.length > 0
+      desc[0, 155]
+    end
+  end
+
   class SearchIndexPage < Page
-    def initialize(site, drugs)
+    def initialize(site, drugs, supplements)
       @site = site
       @base = site.source
       @dir  = ''
       @name = 'search_index.json'
 
       self.process(@name)
-      self.data = {
-        'layout'    => nil,
-        'sitemap'   => false,
-      }
+      self.data = { 'layout' => nil, 'sitemap' => false }
 
-      # 검색에 필요한 필드만 추출 (파일 크기 최소화)
-      index = drugs.map do |d|
+      drug_index = drugs.map do |d|
         {
+          'type'        => 'drug',
           'slug'        => d['slug'],
           'itemName'    => d['itemName'],
           'entpName'    => d['entpName'],
@@ -89,15 +127,22 @@ module Jekyll
         }
       end
 
-      self.content = index.to_json
+      sup_index = supplements.map do |s|
+        {
+          'type'        => 'supplement',
+          'slug'        => s['slug'],
+          'itemName'    => s['itemName'],
+          'entpName'    => s['entpName'] || '',
+          'efcyQesitm'  => (s['primaryFnclty'] || '')[0, 100],
+          'itemImage'   => '',
+          'rawMaterial' => (s['rawMaterial'] || '')[0, 60],
+        }
+      end
+
+      self.content = (drug_index + sup_index).to_json
     end
 
-    def output
-      self.content
-    end
-
-    def render(layouts, registers)
-      # 레이아웃 없이 JSON 그대로 출력
-    end
+    def output   = self.content
+    def render(layouts, registers); end
   end
 end

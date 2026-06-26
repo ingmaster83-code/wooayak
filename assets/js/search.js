@@ -7,6 +7,7 @@ const MAX_RESULTS = 60;
 
 let fuse = null;
 let allDrugs = [];
+let activeType = 'drug'; // 'drug' | 'supplement'
 
 // 카테고리 키워드 매핑
 const CAT_KEYWORDS = {
@@ -23,26 +24,30 @@ async function loadIndex() {
   try {
     const resp = await fetch(SEARCH_INDEX_URL);
     allDrugs = await resp.json();
-    fuse = new Fuse(allDrugs, {
+    rebuildFuse();
+    renderRecent();
+    const q = new URLSearchParams(location.search).get('q');
+    const tab = new URLSearchParams(location.search).get('tab');
+    if (tab === 'supplement') switchTab('supplement');
+    if (q) { document.getElementById('searchInput').value = q; doSearch(q); }
+  } catch (e) {
+    console.error('검색 인덱스 로드 실패', e);
+  }
+}
+
+function rebuildFuse() {
+  const filtered = allDrugs.filter(d => d.type === activeType);
+  fuse = new Fuse(filtered, {
       keys: [
         { name: 'itemName',    weight: 0.5 },
         { name: 'efcyQesitm', weight: 0.3 },
-        { name: 'entpName',   weight: 0.2 },
+        { name: 'entpName',   weight: 0.1 },
+        { name: 'rawMaterial', weight: 0.1 },
       ],
       threshold: 0.35,
       includeScore: true,
       minMatchCharLength: 1,
     });
-    renderRecent();
-    // URL 파라미터로 초기 검색
-    const q = new URLSearchParams(location.search).get('q');
-    if (q) {
-      document.getElementById('searchInput').value = q;
-      doSearch(q);
-    }
-  } catch (e) {
-    console.error('검색 인덱스 로드 실패', e);
-  }
 }
 
 function doSearch(query, cat = '') {
@@ -54,13 +59,11 @@ function doSearch(query, cat = '') {
   }
 
   if (query) {
-    // 초성 검색: ㄱ→가-깋 범위로 변환
     results = fuse.search(query).map(r => r.item);
   } else {
-    results = [...allDrugs];
+    results = allDrugs.filter(d => d.type === activeType);
   }
 
-  // 카테고리 필터
   if (cat && CAT_KEYWORDS[cat]) {
     const kws = CAT_KEYWORDS[cat];
     results = results.filter(d =>
@@ -93,16 +96,21 @@ function renderGrid(items, query = '', total = 0) {
   }
 
   grid.innerHTML = items.map(d => {
+    const isSup = d.type === 'supplement';
+    const href = isSup ? `/supplement/${d.slug}/` : `/drug/${d.slug}/`;
+    const icon = isSup ? '🌿' : '💊';
     const img = d.itemImage
-      ? `<img class="drug-card-image" src="${d.itemImage}" alt="${d.itemName}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      ? `<img class="drug-card-image" src="${d.itemImage}" alt="${escHtml(d.itemName)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
       : '';
-    const noImg = `<div class="drug-card-no-image" ${d.itemImage ? 'style="display:none"' : ''}>💊</div>`;
+    const noImg = `<div class="drug-card-no-image" ${d.itemImage ? 'style="display:none"' : ''}>${icon}</div>`;
     const efcy = (d.efcyQesitm || '').slice(0, 60);
-    return `<a class="drug-card" href="/drug/${d.slug}/" onclick="saveRecent('${d.slug}','${escHtml(d.itemName)}')">
+    const badge = isSup ? `<span class="tag tag-supplement" style="font-size:.72rem;padding:2px 8px">건강기능식품</span>` : '';
+    return `<a class="drug-card" href="${href}" onclick="saveRecent('${d.slug}','${escHtml(d.itemName)}')">
       ${img}${noImg}
       <div class="drug-card-name">${escHtml(d.itemName)}</div>
       <div class="drug-card-company">${escHtml(d.entpName || '')}</div>
       ${efcy ? `<div class="drug-card-efcy">${escHtml(efcy)}</div>` : ''}
+      ${badge}
     </a>`;
   }).join('');
 }
@@ -134,6 +142,27 @@ function renderRecent() {
     `<a class="recent-item" href="/drug/${r.slug}/">${escHtml(r.name)}</a>`
   ).join('');
 }
+
+// 탭 전환
+function switchTab(type) {
+  activeType = type;
+  document.querySelectorAll('.main-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.type === type);
+  });
+  // 카테고리 필터: 건기식은 숨김
+  const catFilter = document.getElementById('categoryFilter');
+  if (catFilter) catFilter.style.display = type === 'drug' ? 'flex' : 'none';
+  activeCat = '';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  const allBtn = document.querySelector('.cat-btn[data-cat=""]');
+  if (allBtn) allBtn.classList.add('active');
+  rebuildFuse();
+  doSearch(document.getElementById('searchInput').value.trim());
+}
+
+document.querySelectorAll('.main-tab').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.type));
+});
 
 // 이벤트
 let activeCat = '';

@@ -1,0 +1,125 @@
+---
+layout: default
+---
+
+<div class="drug-page">
+
+  <nav class="breadcrumb" aria-label="위치">
+    <a href="{{ '/' | relative_url }}">홈</a>
+    <span>›</span>
+    <a href="{{ '/' | relative_url }}?tab=supplement">건강기능식품</a>
+    <span>›</span>
+    <span>{{ page.itemName }}</span>
+  </nav>
+
+  <!-- 헤더 -->
+  <div class="drug-header">
+    <div class="drug-header-image">
+      <div class="no-image">🌿</div>
+    </div>
+    <div class="drug-header-info">
+      <h1 class="drug-name">{{ page.itemName }}</h1>
+      {% if page.entpName and page.entpName != "" %}
+      <p class="drug-company">{{ page.entpName }}</p>
+      {% endif %}
+      <div class="drug-tags">
+        <span class="tag tag-supplement">건강기능식품</span>
+        {% if page.intakeUnit and page.intakeUnit != "" %}
+        <span class="tag tag-form">{{ page.intakeUnit }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- 일일 섭취량 바 -->
+  {% if page.dayIntakeLow and page.dayIntakeLow != "" %}
+  <div class="drug-identify-bar">
+    <span class="identify-label">일일 섭취량</span>
+    <span class="identify-val">
+      {{ page.dayIntakeLow }}
+      {% if page.dayIntakeHigh and page.dayIntakeHigh != page.dayIntakeLow %}
+        ~ {{ page.dayIntakeHigh }}
+      {% endif %}
+      {{ page.intakeUnit }}
+    </span>
+  </div>
+  {% endif %}
+
+  <!-- 광고 -->
+  <div class="ad-slot ad-top">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6464921081676309" data-ad-slot="7080296704" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- 탭 -->
+  <div class="drug-tabs">
+    <button class="tab-btn active" data-tab="efficacy">기능성</button>
+    <button class="tab-btn" data-tab="intake">섭취 방법</button>
+    <button class="tab-btn" data-tab="caution">주의사항</button>
+  </div>
+
+  <div class="tab-panels">
+    <div class="tab-panel active" id="tab-efficacy">
+      {% if page.primaryFnclty and page.primaryFnclty != "" %}
+      <h2>기능성 내용</h2>
+      <p>{{ page.primaryFnclty }}</p>
+      {% endif %}
+      {% if page.rawMaterial and page.rawMaterial != "" %}
+      <h2>주요 원료</h2>
+      <p>{{ page.rawMaterial }}</p>
+      {% endif %}
+    </div>
+
+    <div class="tab-panel" id="tab-intake">
+      {% if page.dayIntakeLow and page.dayIntakeLow != "" %}
+      <h2>일일 섭취량</h2>
+      <p>{{ page.dayIntakeLow }}{% if page.dayIntakeHigh and page.dayIntakeHigh != page.dayIntakeLow %} ~ {{ page.dayIntakeHigh }}{% endif %} {{ page.intakeUnit }}</p>
+      {% endif %}
+      {% if page.intakeMemo and page.intakeMemo != "" %}
+      <h2>섭취 시 주의</h2>
+      <p>{{ page.intakeMemo }}</p>
+      {% endif %}
+      {% unless page.dayIntakeLow or page.intakeMemo %}
+      <p class="no-info">섭취 방법 정보가 없습니다.</p>
+      {% endunless %}
+    </div>
+
+    <div class="tab-panel" id="tab-caution">
+      {% if page.caution and page.caution != "" %}
+      <h2>섭취 시 주의사항</h2>
+      <div class="warn-box">{{ page.caution }}</div>
+      {% else %}
+      <p class="no-info">주의사항 정보가 없습니다.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 광고 하단 -->
+  <div class="ad-slot ad-bottom">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6464921081676309" data-ad-slot="1419180025" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{ page.itemName | escape }}",
+    "category": "건강기능식품"{% if page.primaryFnclty and page.primaryFnclty != "" %},
+    "description": "{{ page.primaryFnclty | escape | truncate: 200 }}"{% endif %}
+  }
+  </script>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
