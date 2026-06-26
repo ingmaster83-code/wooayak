@@ -6,8 +6,8 @@ module Jekyll
     priority :normal
 
     def generate(site)
-      drugs       = load_json(site, '_data/drugs.json')
-      supplements = load_json(site, '_data/supplements.json')
+      drugs       = load_json(site, '_rawdata/drugs.json')
+      supplements = load_json(site, '_rawdata/supplements.json')
 
       if drugs.any?
         Jekyll.logger.info "DrugGenerator:", "#{drugs.size}개 약품 페이지 생성 중..."
