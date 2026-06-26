@@ -1,0 +1,144 @@
+---
+layout: default
+---
+
+<div class="drug-page">
+
+  <!-- 브레드크럼 -->
+  <nav class="breadcrumb" aria-label="위치">
+    <a href="{{ '/' | relative_url }}">홈</a>
+    <span>›</span>
+    <span>{{ page.itemName }}</span>
+  </nav>
+
+  <!-- 약 헤더 -->
+  <div class="drug-header">
+    <div class="drug-header-image">
+      {% if page.itemImage and page.itemImage != "" %}
+      <img src="{{ page.itemImage }}" alt="{{ page.itemName }} 이미지" loading="lazy">
+      {% else %}
+      <div class="no-image">💊</div>
+      {% endif %}
+    </div>
+    <div class="drug-header-info">
+      <h1 class="drug-name">{{ page.itemName }}</h1>
+      <p class="drug-company">{{ page.entpName }}</p>
+      <div class="drug-tags">
+        <span class="tag tag-otc">일반의약품</span>
+        {% if page.formCodeName and page.formCodeName != "" %}
+        <span class="tag tag-form">{{ page.formCodeName }}</span>
+        {% endif %}
+        {% if page.drugShape and page.drugShape != "" %}
+        <span class="tag tag-shape">{{ page.drugShape }}</span>
+        {% endif %}
+        {% if page.colorClass1 and page.colorClass1 != "" %}
+        <span class="tag tag-color">{{ page.colorClass1 }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- 식별 정보 (낱알) -->
+  {% if page.printFront != "" or page.printBack != "" %}
+  <div class="drug-identify-bar">
+    <span class="identify-label">식별문자</span>
+    {% if page.printFront and page.printFront != "" %}<span class="identify-val">앞면: {{ page.printFront }}</span>{% endif %}
+    {% if page.printBack and page.printBack != "" %}<span class="identify-val">뒷면: {{ page.printBack }}</span>{% endif %}
+    {% if page.lengLong and page.lengLong != "" %}<span class="identify-val">크기: {{ page.lengLong }}×{{ page.lengShort }}mm / 두께 {{ page.thick }}mm</span>{% endif %}
+  </div>
+  {% endif %}
+
+  <!-- 광고 (탭 위) -->
+  <div class="ad-slot ad-top">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6464921081676309" data-ad-slot="7080296704" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- 탭 -->
+  <div class="drug-tabs">
+    <button class="tab-btn active" data-tab="efficacy">효능·용법</button>
+    <button class="tab-btn" data-tab="caution">주의사항</button>
+    <button class="tab-btn" data-tab="side-effect">부작용</button>
+    <button class="tab-btn" data-tab="storage">보관법</button>
+  </div>
+
+  <div class="tab-panels">
+    <div class="tab-panel active" id="tab-efficacy">
+      {% if page.efcyQesitm and page.efcyQesitm != "" %}
+      <h2>효능·효과</h2>
+      <p>{{ page.efcyQesitm }}</p>
+      {% endif %}
+      {% if page.useMethodQesitm and page.useMethodQesitm != "" %}
+      <h2>용법·용량</h2>
+      <p>{{ page.useMethodQesitm }}</p>
+      {% endif %}
+    </div>
+
+    <div class="tab-panel" id="tab-caution">
+      {% if page.atpnWarnQesitm and page.atpnWarnQesitm != "" %}
+      <h2>경고</h2>
+      <div class="warn-box">{{ page.atpnWarnQesitm }}</div>
+      {% endif %}
+      {% if page.atpnQesitm and page.atpnQesitm != "" %}
+      <h2>주의사항</h2>
+      <p>{{ page.atpnQesitm }}</p>
+      {% endif %}
+      {% if page.intrcQesitm and page.intrcQesitm != "" %}
+      <h2>상호작용</h2>
+      <p>{{ page.intrcQesitm }}</p>
+      {% endif %}
+    </div>
+
+    <div class="tab-panel" id="tab-side-effect">
+      {% if page.seQesitm and page.seQesitm != "" %}
+      <h2>부작용</h2>
+      <p>{{ page.seQesitm }}</p>
+      {% else %}
+      <p class="no-info">부작용 정보가 없습니다.</p>
+      {% endif %}
+    </div>
+
+    <div class="tab-panel" id="tab-storage">
+      {% if page.depositMethodQesitm and page.depositMethodQesitm != "" %}
+      <h2>보관법</h2>
+      <p>{{ page.depositMethodQesitm }}</p>
+      {% else %}
+      <p class="no-info">보관법 정보가 없습니다.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 광고 (하단) -->
+  <div class="ad-slot ad-bottom">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6464921081676309" data-ad-slot="1419180025" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- Schema.org Drug 마크업 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Drug",
+    "name": "{{ page.itemName | escape }}",
+    "manufacturer": {
+      "@type": "Organization",
+      "name": "{{ page.entpName | escape }}"
+    }{% if page.efcyQesitm and page.efcyQesitm != "" %},
+    "description": "{{ page.efcyQesitm | escape | truncate: 200 }}"{% endif %}{% if page.itemImage and page.itemImage != "" %},
+    "image": "{{ page.itemImage }}"{% endif %}
+  }
+  </script>
+
+</div>
+
+<script>
+// 탭 전환
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+</script>

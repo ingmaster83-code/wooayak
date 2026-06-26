@@ -1,0 +1,62 @@
+---
+layout: default
+title: 이약뭐야? - 의약품 정보 검색
+description: 이 약 뭐야? 제품명, 효능, 성분으로 일반의약품 정보를 바로 찾아보세요. 식약처 공공데이터 기반.
+---
+
+<div class="search-page">
+
+  <div class="search-hero">
+    <h1>이 약, 뭐야? 💊</h1>
+    <p>제품명·효능·성분으로 일반의약품 정보를 바로 확인하세요</p>
+    <div class="search-box-wrap">
+      <input type="text" id="searchInput" class="search-box"
+        placeholder="타이레놀, 소화제, 아세트아미노펜..."
+        autocomplete="off" autofocus>
+      <button class="search-btn" id="searchBtn" aria-label="검색">🔍</button>
+    </div>
+  </div>
+
+  <!-- 카테고리 필터 -->
+  <div class="category-filter" id="categoryFilter">
+    <button class="cat-btn active" data-cat="">전체</button>
+    <button class="cat-btn" data-cat="해열진통">🌡️ 해열·진통</button>
+    <button class="cat-btn" data-cat="소화">💊 소화제</button>
+    <button class="cat-btn" data-cat="감기">🤧 감기약</button>
+    <button class="cat-btn" data-cat="피부">🧴 피부·외용</button>
+    <button class="cat-btn" data-cat="비타민">💛 비타민</button>
+    <button class="cat-btn" data-cat="눈">👁️ 안약</button>
+    <button class="cat-btn" data-cat="소독">🩺 소독·상처</button>
+  </div>
+
+  <!-- 광고 -->
+  <div class="ad-slot">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6464921081676309"
+      data-ad-slot="7080296704" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- 최근 조회 -->
+  <div class="recent-section" id="recentSection" style="display:none">
+    <h2>🕐 최근 조회</h2>
+    <div class="recent-list" id="recentList"></div>
+  </div>
+
+  <!-- 검색 결과 -->
+  <div class="results-header" id="resultsHeader" style="display:none">
+    <span id="resultsCount"></span>
+    <span id="resultsQuery"></span>
+  </div>
+
+  <div id="drugGrid" class="drug-grid"></div>
+  <div id="loadingState" class="loading" style="display:none">검색 중...</div>
+  <div id="emptyState" class="empty-state" style="display:none">
+    <div class="emoji">🔍</div>
+    <p>검색 결과가 없습니다.</p>
+    <p style="font-size:.85rem;margin-top:6px">다른 키워드로 검색해보세요</p>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>

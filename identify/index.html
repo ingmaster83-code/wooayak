@@ -1,0 +1,145 @@
+---
+layout: default
+title: 알약 역검색 - 모양·색상으로 약 찾기
+description: 알약의 모양, 색상, 식별문자로 약 이름을 찾아보세요. 이약뭐야? 알약 역검색 서비스.
+---
+
+<div class="identify-page">
+
+  <nav class="breadcrumb" style="padding:12px 0 0">
+    <a href="/">홈</a><span>›</span><span>알약 역검색</span>
+  </nav>
+
+  <h1>알약 역검색 🔍</h1>
+  <p class="subtitle">모양·색상·식별문자로 약 이름을 찾아보세요</p>
+
+  <!-- 제형 -->
+  <div class="identify-section">
+    <h3>제형</h3>
+    <div class="shape-grid" id="formFilter">
+      <button class="shape-btn" data-val="">전체</button>
+      <button class="shape-btn" data-val="정제">
+        <svg viewBox="0 0 28 28"><ellipse cx="14" cy="14" rx="12" ry="7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        정제
+      </button>
+      <button class="shape-btn" data-val="경질캡슐">
+        <svg viewBox="0 0 28 28"><rect x="4" y="9" width="20" height="10" rx="5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        경질캡슐
+      </button>
+      <button class="shape-btn" data-val="연질캡슐">
+        <svg viewBox="0 0 28 28"><ellipse cx="14" cy="14" rx="10" ry="8" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        연질캡슐
+      </button>
+    </div>
+  </div>
+
+  <!-- 모양 -->
+  <div class="identify-section">
+    <h3>모양</h3>
+    <div class="shape-grid" id="shapeFilter">
+      <button class="shape-btn" data-val="">전체</button>
+      <button class="shape-btn" data-val="원형">
+        <svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        원형
+      </button>
+      <button class="shape-btn" data-val="타원형">
+        <svg viewBox="0 0 28 28"><ellipse cx="14" cy="14" rx="12" ry="8" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        타원형
+      </button>
+      <button class="shape-btn" data-val="장방형">
+        <svg viewBox="0 0 28 28"><rect x="3" y="9" width="22" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        장방형
+      </button>
+      <button class="shape-btn" data-val="반원형">
+        <svg viewBox="0 0 28 28"><path d="M4 18 A10 10 0 0 1 24 18 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        반원형
+      </button>
+      <button class="shape-btn" data-val="삼각형">
+        <svg viewBox="0 0 28 28"><polygon points="14,4 25,24 3,24" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        삼각형
+      </button>
+      <button class="shape-btn" data-val="사각형">
+        <svg viewBox="0 0 28 28"><rect x="4" y="4" width="20" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        사각형
+      </button>
+      <button class="shape-btn" data-val="마름모형">
+        <svg viewBox="0 0 28 28"><polygon points="14,3 25,14 14,25 3,14" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        마름모
+      </button>
+      <button class="shape-btn" data-val="육각형">
+        <svg viewBox="0 0 28 28"><polygon points="14,3 24,8.5 24,19.5 14,25 4,19.5 4,8.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        육각형
+      </button>
+      <button class="shape-btn" data-val="오각형">
+        <svg viewBox="0 0 28 28"><polygon points="14,3 25,11 21,24 7,24 3,11" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        오각형
+      </button>
+      <button class="shape-btn" data-val="팔각형">
+        <svg viewBox="0 0 28 28"><polygon points="10,3 18,3 25,10 25,18 18,25 10,25 3,18 3,10" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        팔각형
+      </button>
+    </div>
+  </div>
+
+  <!-- 색상 -->
+  <div class="identify-section">
+    <h3>색상</h3>
+    <div class="color-grid" id="colorFilter">
+      <button class="color-btn" data-val="" style="background:#E5E7EB" title="전체"></button>
+      <button class="color-btn" data-val="하양" style="background:#FFFFFF;border-color:#ccc" title="하양"></button>
+      <button class="color-btn" data-val="노랑" style="background:#FDE047" title="노랑"></button>
+      <button class="color-btn" data-val="주황" style="background:#FB923C" title="주황"></button>
+      <button class="color-btn" data-val="분홍" style="background:#F9A8D4" title="분홍"></button>
+      <button class="color-btn" data-val="빨강" style="background:#EF4444" title="빨강"></button>
+      <button class="color-btn" data-val="갈색" style="background:#92400E" title="갈색"></button>
+      <button class="color-btn" data-val="연두" style="background:#86EFAC" title="연두"></button>
+      <button class="color-btn" data-val="초록" style="background:#16A34A" title="초록"></button>
+      <button class="color-btn" data-val="청록" style="background:#2DD4BF" title="청록"></button>
+      <button class="color-btn" data-val="파랑" style="background:#3B82F6" title="파랑"></button>
+      <button class="color-btn" data-val="남색" style="background:#1E3A8A" title="남색"></button>
+      <button class="color-btn" data-val="보라" style="background:#A855F7" title="보라"></button>
+      <button class="color-btn" data-val="회색" style="background:#9CA3AF" title="회색"></button>
+      <button class="color-btn" data-val="검정" style="background:#111827" title="검정"></button>
+      <button class="color-btn" data-val="투명" style="background:linear-gradient(135deg,#fff 50%,#ccc 50%)" title="투명"></button>
+    </div>
+  </div>
+
+  <!-- 분할선 -->
+  <div class="identify-section">
+    <h3>분할선</h3>
+    <div class="shape-grid" id="lineFilter">
+      <button class="shape-btn" data-val="">전체</button>
+      <button class="shape-btn" data-val="없음">없음</button>
+      <button class="shape-btn" data-val="(+)형">(+)형</button>
+      <button class="shape-btn" data-val="(-)형">(-)형</button>
+      <button class="shape-btn" data-val="기타">기타</button>
+    </div>
+  </div>
+
+  <!-- 식별문자 -->
+  <div class="identify-section">
+    <h3>식별문자</h3>
+    <input type="text" id="printInput" class="identify-input" placeholder="예: YH, LT, 500">
+  </div>
+
+  <!-- 제품명/성분명 -->
+  <div class="identify-section">
+    <h3>제품명 또는 성분명 (선택)</h3>
+    <input type="text" id="nameInput" class="identify-input" placeholder="예: 타이레놀, 아세트아미노펜">
+  </div>
+
+  <button class="identify-search-btn" id="identifySearchBtn">이 약 찾기 🔍</button>
+
+  <!-- 결과 -->
+  <div class="identify-results">
+    <div id="identifyGrid" class="drug-grid"></div>
+    <div id="identifyEmpty" class="empty-state" style="display:none">
+      <div class="emoji">🔍</div>
+      <p>조건에 맞는 약을 찾지 못했습니다.</p>
+      <p style="font-size:.85rem;margin-top:6px">조건을 조금 줄여보세요</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="{{ '/assets/js/identify.js' | relative_url }}"></script>
