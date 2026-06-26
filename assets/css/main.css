@@ -348,19 +348,12 @@ img { max-width: 100%; }
 /* 건강기능식품 태그 */
 .tag-supplement { background: #DCFCE7; color: #166534; }
 
-/* ===== 사이드바 레이아웃 ===== */
-.page-with-sidebar {
-  display: flex; gap: 28px; align-items: flex-start;
-  max-width: 1200px; margin: 0 auto; padding: 0 20px;
-}
-.page-content { flex: 1; min-width: 0; }
-.drug-sidebar { width: 300px; flex-shrink: 0; }
-.sidebar-sticky {
-  position: sticky; top: 76px;
-}
-@media (max-width: 960px) {
-  .drug-sidebar { display: none; }
-  .page-with-sidebar { padding: 0; }
+/* ===== 상단 광고 바 ===== */
+.top-ad-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  text-align: center;
 }
 
 /* ===== 원본 링크 ===== */
