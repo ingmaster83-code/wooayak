@@ -8,14 +8,17 @@ generate_seo.py - DeepSeek API로 약품별 SEO 설명문 생성
   python scripts/generate_seo.py --force    # 기존 것도 덮어쓰기
 """
 import json
+import sys
 import time
 import argparse
 from pathlib import Path
 import requests
 
+sys.stdout.reconfigure(encoding='utf-8')
+
 API_KEY_PATH = Path(r"C:\개인\개인 프로젝트\blogwriter_new\blogger_seo_bot\config\deepseek_api_key.txt")
-DATA_FILE    = Path(__file__).parent.parent / "_data" / "drugs.json"
-DELAY        = 0.15  # 요청 간격(초)
+DATA_FILE    = Path(__file__).parent.parent / "_rawdata" / "drugs.json"
+DELAY        = 0.15
 
 PROMPT_TMPL = """다음 의약품 정보를 바탕으로 네이버/구글 검색 최적화용 한국어 소개문을 120자 이내로 작성하세요.
 효능과 주요 특징을 자연스럽게 담아주세요. 문장으로 끝내세요. 따옴표나 특수기호 없이.
@@ -75,28 +78,41 @@ def main():
     total = len(targets)
     print(f"생성 대상: {total}건\n")
 
+    seq_map = {d["itemSeq"]: i for i, d in enumerate(drugs)}
+
     done = 0
     for drug in targets:
         try:
             desc = generate_desc(drug, api_key)
             drug["seoDescription"] = desc
+            idx = seq_map.get(drug["itemSeq"])
+            if idx is not None:
+                drugs[idx]["seoDescription"] = desc
             done += 1
-            print(f"  [{done}/{total}] {drug['itemName'][:20]}: {desc[:50]}...")
+            try:
+                print(f"  [{done}/{total}] {drug['itemName'][:20]}: {desc[:40]}...")
+            except Exception:
+                print(f"  [{done}/{total}] (출력 생략)")
         except Exception as e:
-            print(f"  [실패] {drug.get('itemName', '')}: {e}")
+            try:
+                print(f"  [실패] {drug.get('itemName', '')}: {e}")
+            except Exception:
+                print(f"  [실패] (출력 불가): {e}")
+
+        if done % 100 == 0:
+            DATA_FILE.write_text(
+                json.dumps(drugs, ensure_ascii=False, indent=2),
+                encoding="utf-8"
+            )
+            print(f"  [저장] {done}건 완료")
+
         time.sleep(DELAY)
 
-    # 저장 (전체 배열 업데이트)
-    seq_map = {d["itemSeq"]: d for d in drugs}
-    for t in targets:
-        if t["itemSeq"] in seq_map:
-            seq_map[t["itemSeq"]]["seoDescription"] = t.get("seoDescription", "")
-
     DATA_FILE.write_text(
-        json.dumps(list(seq_map.values()), ensure_ascii=False, indent=2),
+        json.dumps(drugs, ensure_ascii=False, indent=2),
         encoding="utf-8"
     )
-    print(f"\n완료: {done}/{total}건 생성, {DATA_FILE} 저장")
+    print(f"\n완료: {done}/{total}건 생성")
 
 
 if __name__ == "__main__":

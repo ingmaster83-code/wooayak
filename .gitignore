@@ -6,3 +6,6 @@ vendor/
 Gemfile.lock
 *.pyc
 __pycache__/
+
+.env
+_data/drugs_backup*.json
