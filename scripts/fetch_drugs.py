@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """
-fetch_drugs.py - ?ì•½ì²?API ?„ì²´ ?°ì´???˜ì§‘ ??_rawdata/drugs.json ?ì„±
+fetch_drugs.py - ì˜ì•½í’ˆ API ì „ì²´ ë°ì´í„° ìˆ˜ì§‘ â†’ _rawdata/drugs.json ìƒì„±
 
-?˜ì§‘ ?€??
-  1. e?½ì???API (DrbEasyDrugInfoService) - ?¨ëŠ¥/?©ë²•/ì£¼ì˜?¬í•­ ??  2. ?±ì•Œ?ë³„ API (MdcinGrnIdntfcInfoService03) - ëª¨ì–‘/?‰ìƒ/?´ë?ì§€ ??
-JOIN ?? itemSeq (e?½ì??? == ITEM_SEQ (?±ì•Œ?ë³„)
+ìˆ˜ì§‘ ë‹¨ê³„:
+  1. eì•½ì€ìš” API (DrbEasyDrugInfoService) - íš¨ëŠ¥/ìš©ë²•/ì£¼ì˜ì‚¬í•­ ë“±
+  2. ë‚±ì•Œì‹ë³„ API (MdcinGrnIdntfcInfoService03) - ëª¨ì–‘/ìƒ‰ìƒ/ì´ë¯¸ì§€ ë“±
+JOIN í‚¤: itemSeq (eì•½ì€ìš”) == ITEM_SEQ (ë‚±ì•Œì‹ë³„)
 
-?¬ìš©ë²?
+ì‚¬ìš©ë²•:
   python scripts/fetch_drugs.py
-  python scripts/fetch_drugs.py --limit 100   # ?ŒìŠ¤?¸ìš© 100ê±´ë§Œ
+  python scripts/fetch_drugs.py --limit 100   # í…ŒìŠ¤íŠ¸ìš© 100ê±´ë§Œ
 """
 
 import json
@@ -25,12 +26,12 @@ GRAIN_URL     = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService03/getM
 OUT_DIR  = Path(__file__).parent.parent / "_data"
 OUT_FILE = OUT_DIR / "drugs.json"
 
-BATCH = 100   # 1???”ì²­??ê±´ìˆ˜ (API ìµœë? 100)
-DELAY = 0.3   # ?”ì²­ ê°„ê²©(ì´?
+BATCH = 100   # 1íšŒ ìš”ì²­ë‹¹ ê±´ìˆ˜ (API ìµœëŒ€ 100)
+DELAY = 0.3   # ìš”ì²­ ê°„ê²©(ì´ˆ)
 
 
 def fetch_all(url: str, extra_params: dict = None, limit: int = 0) -> list:
-    """?˜ì´ì§€?¤ì´?˜ìœ¼ë¡??„ì²´ ?°ì´???˜ì§‘"""
+    """í˜ì´ì§€ë„¤ì´ì…˜ìœ¼ë¡œ ì „ì²´ ë°ì´í„° ìˆ˜ì§‘"""
     items = []
     page  = 1
 
@@ -54,10 +55,10 @@ def fetch_all(url: str, extra_params: dict = None, limit: int = 0) -> list:
             except Exception as e:
                 retry += 1
                 wait = DELAY * (3 ** retry)
-                print(f"  [?¬ì‹œ??{retry}/5] page={page}: {e} ??{wait:.0f}ì´??€ê¸?)
+                print(f"  [ì¬ì‹œë„ {retry}/5] page={page}: {e} â†’ {wait:.0f}ì´ˆ ëŒ€ê¸°")
                 time.sleep(wait)
         else:
-            print(f"  [?¬ê¸°] page={page} 5???¤íŒ¨, ?¤ìŒ?¼ë¡œ ì§„í–‰")
+            print(f"  [í¬ê¸°] page={page} 5íšŒ ì‹¤íŒ¨, ë‹¤ìŒìœ¼ë¡œ ì§„í–‰")
             break
 
         body = data.get("body", {})
@@ -66,14 +67,14 @@ def fetch_all(url: str, extra_params: dict = None, limit: int = 0) -> list:
         if not page_items:
             break
 
-        # ë¦¬ìŠ¤?¸ê? ?„ë‹Œ ê²½ìš°(?¨ì¼ dict) ì²˜ë¦¬
+        # ë¦¬ìŠ¤íŠ¸ê°€ ì•„ë‹Œ ê²½ìš°(ë‹¨ì¼ dict) ì²˜ë¦¬
         if isinstance(page_items, dict):
             page_items = [page_items]
 
         items.extend(page_items)
 
         total = int(body.get("totalCount", 0))
-        print(f"  page {page:3d} | ?˜ì§‘ {len(items):5d} / {total}")
+        print(f"  page {page:3d} | ìˆ˜ì§‘ {len(items):5d} / {total}")
 
         if limit and len(items) >= limit:
             items = items[:limit]
@@ -89,26 +90,26 @@ def fetch_all(url: str, extra_params: dict = None, limit: int = 0) -> list:
 
 
 def clean_text(text) -> str:
-    """ë¶ˆí•„?”í•œ ê³µë°±Â·?œê·¸ ?œê±°"""
-    if not text or str(text).strip() in ("(?†ìŒ)", "?†ìŒ", ""):
+    """ë¶ˆí•„ìš”í•œ ê³µë°±Â·íƒœê·¸ ì œê±°"""
+    if not text or str(text).strip() in ("(ì—†ìŒ)", "ì—†ìŒ", ""):
         return ""
     text = str(text)
-    # ê°„ë‹¨??HTML ?œê·¸ ?œê±°
+    # ê°„ë‹¨í•œ HTML íƒœê·¸ ì œê±°
     text = re.sub(r"<[^>]+>", "", text)
     text = text.replace("\xa0", " ").strip()
     return text
 
 
 def slugify(name: str) -> str:
-    """?œí’ˆëª…ì„ URL-safe slugë¡?ë³€??""
-    # ?œê?Â·?ìˆ«?Â·í•˜?´í”ˆë§??ˆìš©
-    name = re.sub(r"[^\w\sê°€-??", "", name)
+    """ìƒí’ˆëª…ì„ URL-safe slugë¡œ ë³€í™˜"""
+    # í•œê¸€Â·ìˆ«ìÂ·í•˜ì´í”ˆë§Œ í—ˆìš©
+    name = re.sub(r"[^\w\sê°€-í£]", "", name)
     name = re.sub(r"\s+", "-", name.strip())
     return name[:60].strip("-").lower()
 
 
 def build_drug_record(easy: dict, grain: dict = None) -> dict:
-    """e?½ì???+ ?±ì•Œ?ë³„ ?°ì´?°ë? ?˜ë‚˜???ˆì½”?œë¡œ ?©ì¹˜ê¸?""
+    """eì•½ì€ìš” + ë‚±ì•Œì‹ë³„ ë°ì´í„°ë¥¼ í•˜ë‚˜ì˜ ë ˆì½”ë“œë¡œ í•©ì¹˜ê¸°"""
     item_seq  = str(easy.get("itemSeq", ""))
     item_name = clean_text(easy.get("itemName", ""))
 
@@ -126,7 +127,7 @@ def build_drug_record(easy: dict, grain: dict = None) -> dict:
         "depositMethodQesitm": clean_text(easy.get("depositMethodQesitm", "")),
         "itemImage":         clean_text(easy.get("itemImage", "")),
         "bizrno":            clean_text(easy.get("bizrno", "")),
-        # ?±ì•Œ?ë³„ (?†ìœ¼ë©?ë¹ˆê°’)
+        # ë‚±ì•Œì‹ë³„ (ì—†ìœ¼ë©´ ë¹ˆê°’)
         "drugShape":         "",
         "colorClass1":       "",
         "colorClass2":       "",
@@ -139,7 +140,7 @@ def build_drug_record(easy: dict, grain: dict = None) -> dict:
         "lengShort":         "",
         "thick":             "",
         "chart":             "",
-        # SEO??(generate_seo.py?ì„œ ì±„ì?)
+        # SEOìš© (generate_seo.pyì—ì„œ ì±„ì›€)
         "seoDescription":    "",
     }
 
@@ -157,7 +158,7 @@ def build_drug_record(easy: dict, grain: dict = None) -> dict:
             "lengShort":    clean_text(grain.get("LENG_SHORT", "")),
             "thick":        clean_text(grain.get("THICK", "")),
             "chart":        clean_text(grain.get("CHART", "")),
-            # ?±ì•Œ ?´ë?ì§€ê°€ ?ˆìœ¼ë©??°ì„  ?¬ìš©
+            # ë‚±ì•Œ ì´ë¯¸ì§€ê°€ ìˆìœ¼ë©´ ìš°ì„  ì‚¬ìš©
             "itemImage":    clean_text(grain.get("ITEM_IMAGE", "")) or record["itemImage"],
         })
 
@@ -165,28 +166,30 @@ def build_drug_record(easy: dict, grain: dict = None) -> dict:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="?ì•½ì²?API ?„ì²´ ?˜ì§‘")
-    parser.add_argument("--limit", type=int, default=0, help="?ŒìŠ¤?¸ìš© ê±´ìˆ˜ ?œí•œ (0=?„ì²´)")
+    parser = argparse.ArgumentParser(description="ì˜ì•½í’ˆ API ì „ì²´ ìˆ˜ì§‘")
+    parser.add_argument("--limit", type=int, default=0, help="í…ŒìŠ¤íŠ¸ìš© ê±´ìˆ˜ ì œí•œ (0=ì „ì²´)")
     args = parser.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    # ?€?€ Step 1: e?½ì????„ì²´ ?˜ì§‘ ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
-    print("\n[Step 1] e?½ì???API ?˜ì§‘ ì¤?..")
+    # â”€â”€ Step 1: eì•½ì€ìš” ì „ì²´ ìˆ˜ì§‘ â”€â”€
+    print("\n[Step 1] eì•½ì€ìš” API ìˆ˜ì§‘ ì¤‘...")
     easy_items = fetch_all(EASY_DRUG_URL, limit=args.limit)
-    print(f"  ??ì´?{len(easy_items)}ê±??˜ì§‘ ?„ë£Œ\n")
+    print(f"  â†’ ì´ {len(easy_items)}ê±´ ìˆ˜ì§‘ ì™„ë£Œ\n")
 
-    # itemSeq ??easy dict ?¸ë±??    easy_index = {str(item.get("itemSeq", "")): item for item in easy_items}
+    # itemSeq â†’ easy dict ì¸ë±ì‹±
+    easy_index = {str(item.get("itemSeq", "")): item for item in easy_items}
 
-    # ?€?€ Step 2: ?±ì•Œ?ë³„ ?„ì²´ ?˜ì§‘ ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
-    print("[Step 2] ?±ì•Œ?ë³„ API ?˜ì§‘ ì¤?..")
-    grain_items = fetch_all(GRAIN_URL, limit=0)  # ?±ì•Œ?€ ??ƒ ?„ì²´
-    print(f"  ??ì´?{len(grain_items)}ê±??˜ì§‘ ?„ë£Œ\n")
+    # â”€â”€ Step 2: ë‚±ì•Œì‹ë³„ ì „ì²´ ìˆ˜ì§‘ â”€â”€
+    print("[Step 2] ë‚±ì•Œì‹ë³„ API ìˆ˜ì§‘ ì¤‘...")
+    grain_items = fetch_all(GRAIN_URL, limit=0)  # ë‚±ì•Œì€ í•­ìƒ ì „ì²´
+    print(f"  â†’ ì´ {len(grain_items)}ê±´ ìˆ˜ì§‘ ì™„ë£Œ\n")
 
-    # ITEM_SEQ ??grain dict ?¸ë±??    grain_index = {str(item.get("ITEM_SEQ", "")): item for item in grain_items}
+    # ITEM_SEQ â†’ grain dict ì¸ë±ì‹±
+    grain_index = {str(item.get("ITEM_SEQ", "")): item for item in grain_items}
 
-    # ?€?€ Step 3: JOIN ë°??ˆì½”???ì„± ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
-    print("[Step 3] ?°ì´??ë³‘í•© ì¤?..")
+    # â”€â”€ Step 3: JOIN í›„ ë ˆì½”ë“œ ìƒì„± â”€â”€
+    print("[Step 3] ë°ì´í„° ë³‘í•© ì¤‘...")
     drugs = []
     matched = 0
     for seq, easy in easy_index.items():
@@ -196,16 +199,24 @@ def main():
         record = build_drug_record(easy, grain)
         drugs.append(record)
 
-    print(f"  ???±ì•Œ?ë³„ ë§¤ì¹­: {matched} / {len(drugs)}ê±?)
+    print(f"  ë‚±ì•Œì‹ë³„ ë§¤ì¹­: {matched} / {len(drugs)}ê±´")
 
-    # ?€?€ Step 4: ?€???€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
+    # â”€â”€ Step 4: ì €ì¥ â”€â”€
+    if OUT_FILE.exists():
+        existing = json.loads(OUT_FILE.read_text(encoding="utf-8"))
+        if len(drugs) < len(existing) * 0.5:
+            raise SystemExit(
+                f"ìˆ˜ì§‘ ê±´ìˆ˜({len(drugs)}ê±´)ê°€ ê¸°ì¡´ ë°ì´í„°({len(existing)}ê±´)ì˜ ì ˆë°˜ ë¯¸ë§Œì…ë‹ˆë‹¤. "
+                "API ì˜¤ë¥˜ë¡œ íŒë‹¨í•˜ì—¬ ì €ì¥ì„ ì¤‘ë‹¨í•©ë‹ˆë‹¤."
+            )
+
     OUT_FILE.write_text(
         json.dumps(drugs, ensure_ascii=False, indent=2),
         encoding="utf-8"
     )
-    print(f"\n[?„ë£Œ] {OUT_FILE}")
-    print(f"  ì´?{len(drugs)}ê°??½í’ˆ ?€??)
-    print(f"  ?Œì¼ ?¬ê¸°: {OUT_FILE.stat().st_size / 1024:.1f} KB")
+    print(f"\n[ì™„ë£Œ] {OUT_FILE}")
+    print(f"  ì´ {len(drugs)}ê°œ ì˜ì•½í’ˆ ì €ì¥")
+    print(f"  íŒŒì¼ í¬ê¸°: {OUT_FILE.stat().st_size / 1024:.1f} KB")
 
 
 if __name__ == "__main__":

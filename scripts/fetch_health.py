@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-fetch_health.py - ?í’ˆ?ˆì „?˜ë¼ ê±´ê°•ê¸°ëŠ¥?í’ˆ API ?„ì²´ ?˜ì§‘
-ê²°ê³¼ë¥?_rawdata/supplements.json?¼ë¡œ ?€??
-?¬ìš©ë²?
+fetch_health.py - ì‹í’ˆì•ˆì „ë‚˜ë¼ ê±´ê°•ê¸°ëŠ¥ì‹í’ˆ API ì „ì²´ ìˆ˜ì§‘
+ê²°ê³¼ë¥¼ _rawdata/supplements.jsonìœ¼ë¡œ ì €ì¥
+ì‚¬ìš©ë²•:
   python scripts/fetch_health.py
-  python scripts/fetch_health.py --limit 50  # ?ŒìŠ¤??"""
+  python scripts/fetch_health.py --limit 50  # í…ŒìŠ¤íŠ¸
+"""
 import json
 import re
 import sys
@@ -43,11 +44,11 @@ def fetch_all(service_id: str, limit: int = 0) -> list:
             except Exception as e:
                 retry += 1
                 wait = DELAY * (3 ** retry)
-                print(f"  [?¬ì‹œ??{retry}/5] {service_id} start={start}: {e} ??{wait:.0f}ì´??€ê¸?)
+                print(f"  [ì¬ì‹œë„ {retry}/5] {service_id} start={start}: {e} â†’ {wait:.0f}ì´ˆ ëŒ€ê¸°")
                 time.sleep(wait)
 
         if data is None:
-            print(f"  [?¬ê¸°] {service_id} start={start}")
+            print(f"  [í¬ê¸°] {service_id} start={start}")
             break
 
         svc   = data.get(service_id, {})
@@ -60,7 +61,7 @@ def fetch_all(service_id: str, limit: int = 0) -> list:
             rows = [rows]
 
         items.extend(rows)
-        print(f"  {service_id} | {start}~{end} | ?˜ì§‘ {len(items):5d} / {total}")
+        print(f"  {service_id} | {start}~{end} | ìˆ˜ì§‘ {len(items):5d} / {total}")
 
         if limit and len(items) >= limit:
             items = items[:limit]
@@ -78,20 +79,20 @@ def clean(text) -> str:
     if not text:
         return ""
     text = str(text).strip()
-    if text in ("(?†ìŒ)", "?†ìŒ", "-", ""):
+    if text in ("(ì—†ìŒ)", "ì—†ìŒ", "-", ""):
         return ""
     text = re.sub(r"<[^>]+>", "", text)
     return text.replace("\xa0", " ").strip()
 
 
 def slugify(name: str) -> str:
-    name = re.sub(r"[^\w\sê°€-??", "", name)
+    name = re.sub(r"[^\w\sê°€-í£]", "", name)
     name = re.sub(r"\s+", "-", name.strip())
     return name[:60].strip("-").lower()
 
 
 def build_supplement(row: dict, source: str) -> dict:
-    """I2710(?ˆëª©ë¶„ë¥˜) ê¸°ë°˜ ?ˆì½”???ì„±"""
+    """I2710(í’ˆëª©ë¶„ë¥˜) ê¸°ë°˜ ë ˆì½”ë“œ ìƒì„±"""
     name = clean(row.get("PRDCT_NM", ""))
     if not name:
         return None
@@ -120,7 +121,7 @@ def build_supplement(row: dict, source: str) -> dict:
 
 
 def build_from_i0040(row: dict) -> dict:
-    """I-0040(ê¸°ëŠ¥???ë£Œ?¸ì •) ê¸°ë°˜ ?ˆì½”??""
+    """I-0040(ê¸°ëŠ¥ì„± ì›ë£Œ ì¸ì •) ê¸°ë°˜ ë ˆì½”ë“œ"""
     name = clean(row.get("APLC_RAWMTRL_NM", ""))
     if not name:
         return None
@@ -147,17 +148,16 @@ def build_from_i0040(row: dict) -> dict:
 
 
 def build_from_i0050(row: dict) -> dict:
-    """I-0050(ê°œë³„?¸ì •?? ê¸°ë°˜ ?ˆì½”??""
+    """I-0050(ê°œë³„ì¸ì •í˜•) ê¸°ë°˜ ë ˆì½”ë“œ"""
     name = clean(row.get("RAWMTRL_NM", ""))
     if not name:
         return None
 
     uid = f"sup-{slugify(name)}"
     fnclty = clean(row.get("PRIMARY_FNCLTY", ""))
-    # êµ?¬¸ë§?ì¶”ì¶œ
-    ko_match = re.search(r"[ï¼?(]êµ?¬¸[ï¼?)](.*?)(?:[ï¼?(]?ë¬¸[ï¼?)]|$)", fnclty, re.DOTALL)
-    if ko_match:
-        fnclty = ko_match.group(1).strip()
+    # ì°¸ê³ : ì›ë³¸ í•„ë“œì— êµ­ë¬¸/ì˜ë¬¸ ì„¤ëª…ì´ ì„ì—¬ ìˆëŠ” ê²½ìš°ê°€ ìˆì–´
+    # êµ­ë¬¸ êµ¬ê°„ë§Œ ì¶”ì¶œí•˜ëŠ” ì •ê·œì‹ì´ ìˆì—ˆìœ¼ë‚˜, ì›ë³¸ ì¸ì½”ë”© ì†ìƒìœ¼ë¡œ
+    # ì •í™•í•œ íŒ¨í„´ì„ ë³µì›í•  ìˆ˜ ì—†ì–´ ì—¬ê¸°ì„œëŠ” ì›ë¬¸ ê·¸ëŒ€ë¡œ ì‚¬ìš©í•œë‹¤.
 
     return {
         "type":           "supplement",
@@ -185,19 +185,19 @@ def main():
     args = parser.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    supplements = {}  # slug ??record (ì¤‘ë³µ ?œê±°)
+    supplements = {}  # slug â†’ record (ì¤‘ë³µ ì œê±°)
 
-    # ?€?€ Step 1: I2710 ?ˆëª©ë¶„ë¥˜ (ë©”ì¸) ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
-    print("\n[Step 1] I2710 ?ˆëª©ë¶„ë¥˜?•ë³´ ?˜ì§‘...")
+    # â”€â”€ Step 1: I2710 í’ˆëª©ë¶„ë¥˜ (ë©”ì¸) â”€â”€
+    print("\n[Step 1] I2710 í’ˆëª©ë¶„ë¥˜ì •ë³´ ìˆ˜ì§‘...")
     rows = fetch_all("I2710", args.limit)
     for row in rows:
         rec = build_supplement(row, "I2710")
         if rec and rec["slug"] not in supplements:
             supplements[rec["slug"]] = rec
-    print(f"  ??{len(supplements)}ê±??±ë¡\n")
+    print(f"  â†’ {len(supplements)}ê±´ ë“±ë¡\n")
 
-    # ?€?€ Step 2: I-0040 ê¸°ëŠ¥???ë£Œ?¸ì • ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
-    print("[Step 2] I-0040 ê¸°ëŠ¥???ë£Œ?¸ì •?„í™© ?˜ì§‘...")
+    # â”€â”€ Step 2: I-0040 ê¸°ëŠ¥ì„± ì›ë£Œ ì¸ì • â”€â”€
+    print("[Step 2] I-0040 ê¸°ëŠ¥ì„± ì›ë£Œ ì¸ì •í˜„í™© ìˆ˜ì§‘...")
     rows = fetch_all("I-0040", args.limit)
     added = 0
     for row in rows:
@@ -206,16 +206,16 @@ def main():
             supplements[rec["slug"]] = rec
             added += 1
         elif rec and rec["slug"] in supplements:
-            # ê¸°ì¡´ ?ˆì½”?œì— ê¸°ëŠ¥??ë³´ì™„
+            # ê¸°ì¡´ ë ˆì½”ë“œì— ê¸°ëŠ¥ì„± ë³´ì™„
             existing = supplements[rec["slug"]]
             if not existing["primaryFnclty"] and rec["primaryFnclty"]:
                 existing["primaryFnclty"] = rec["primaryFnclty"]
             if not existing["caution"] and rec["caution"]:
                 existing["caution"] = rec["caution"]
-    print(f"  ??{added}ê±?? ê·œ ì¶”ê?, ì´?{len(supplements)}ê±?n")
+    print(f"  â†’ {added}ê±´ ì‹ ê·œ ì¶”ê°€, ì´ {len(supplements)}ê±´\n")
 
-    # ?€?€ Step 3: I-0050 ê°œë³„?¸ì •???€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
-    print("[Step 3] I-0050 ê°œë³„?¸ì •???•ë³´ ?˜ì§‘...")
+    # â”€â”€ Step 3: I-0050 ê°œë³„ì¸ì •í˜• â”€â”€
+    print("[Step 3] I-0050 ê°œë³„ì¸ì •í˜• ì •ë³´ ìˆ˜ì§‘...")
     rows = fetch_all("I-0050", args.limit)
     added = 0
     for row in rows:
@@ -223,20 +223,28 @@ def main():
         if rec and rec["slug"] not in supplements:
             supplements[rec["slug"]] = rec
             added += 1
-    print(f"  ??{added}ê±?? ê·œ ì¶”ê?, ì´?{len(supplements)}ê±?n")
+    print(f"  â†’ {added}ê±´ ì‹ ê·œ ì¶”ê°€, ì´ {len(supplements)}ê±´\n")
 
-    # ?€?€ Step 4: ?€???€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
+    # â”€â”€ Step 4: ì €ì¥ â”€â”€
     result = list(supplements.values())
-    # ê¸°ëŠ¥???•ë³´ ?†ëŠ” ??ª© ?œê±°
+    # ê¸°ëŠ¥ì„± ì •ë³´ ì—†ëŠ” í•­ëª© ì œê±°
     result = [r for r in result if r["primaryFnclty"] or r["rawMaterial"]]
+
+    if OUT_FILE.exists():
+        existing = json.loads(OUT_FILE.read_text(encoding="utf-8"))
+        if len(result) < len(existing) * 0.5:
+            raise SystemExit(
+                f"ìˆ˜ì§‘ ê±´ìˆ˜({len(result)}ê±´)ê°€ ê¸°ì¡´ ë°ì´í„°({len(existing)}ê±´)ì˜ ì ˆë°˜ ë¯¸ë§Œì…ë‹ˆë‹¤. "
+                "API ì˜¤ë¥˜ë¡œ íŒë‹¨í•˜ì—¬ ì €ì¥ì„ ì¤‘ë‹¨í•©ë‹ˆë‹¤."
+            )
 
     OUT_FILE.write_text(
         json.dumps(result, ensure_ascii=False, indent=2),
         encoding="utf-8"
     )
-    print(f"[?„ë£Œ] {OUT_FILE}")
-    print(f"  ì´?{len(result)}ê°?ê±´ê°•ê¸°ëŠ¥?í’ˆ ?€??)
-    print(f"  ?Œì¼ ?¬ê¸°: {OUT_FILE.stat().st_size / 1024:.1f} KB")
+    print(f"[ì™„ë£Œ] {OUT_FILE}")
+    print(f"  ì´ {len(result)}ê°œ ê±´ê°•ê¸°ëŠ¥ì‹í’ˆ ì €ì¥")
+    print(f"  íŒŒì¼ í¬ê¸°: {OUT_FILE.stat().st_size / 1024:.1f} KB")
 
 
 if __name__ == "__main__":
