@@ -19,7 +19,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 API_KEY  = "9fea81760dce4f86ac18"
 BASE_URL = "http://openapi.foodsafetykorea.go.kr/api"
 
-OUT_DIR  = Path(__file__).parent.parent / "_data"
+OUT_DIR  = Path(__file__).parent.parent / "_rawdata"
 OUT_FILE = OUT_DIR / "supplements.json"
 
 BATCH = 100

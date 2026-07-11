@@ -23,7 +23,7 @@ API_KEY       = "9490b1d34e92aa9e25b32a4cff1438fc7b9c71e5d332413916a391e867f61e8
 EASY_DRUG_URL = "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList"
 GRAIN_URL     = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService03/getMdcinGrnIdntfcInfoList03"
 
-OUT_DIR  = Path(__file__).parent.parent / "_data"
+OUT_DIR  = Path(__file__).parent.parent / "_rawdata"
 OUT_FILE = OUT_DIR / "drugs.json"
 
 BATCH = 100   # 1회 요청당 건수 (API 최대 100)
