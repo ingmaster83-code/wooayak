@@ -12,12 +12,12 @@
   <meta property="og:type" content="article">
   <meta property="og:title" content="{{ page.title }}">
   <meta property="og:description" content="{{ page.description }}">
-  {% if page.itemImage %}<meta property="og:image" content="{{ page.itemImage }}">{% endif %}
   {% else %}
   <meta property="og:type" content="website">
   <meta property="og:title" content="{% if page.title %}{{ page.title }} | 이약뭐야?{% else %}이약뭐야? - 의약품 정보 검색{% endif %}">
   <meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
   {% endif %}
+  <meta property="og:image" content="{{ page.itemImage | default: '/assets/og-image.png' | absolute_url }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:site_name" content="이약뭐야?">
   <meta name="twitter:card" content="summary_large_image">
