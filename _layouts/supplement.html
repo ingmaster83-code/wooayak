@@ -94,6 +94,12 @@ layout: default
     </div>
   </div>
 
+  <!-- 최근 본 약 -->
+  <div class="recent-section" id="recentSection" style="display:none">
+    <h2>🕑 최근 본 약</h2>
+    <div class="recent-list" id="recentList"></div>
+  </div>
+
   <!-- Schema.org -->
   <script type="application/ld+json">
   {
@@ -116,4 +122,24 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
   });
 });
+
+// 최근 본 약 (localStorage, 약품/건강기능식품 공용)
+(() => {
+  const KEY = 'wooayak_recent';
+  const currentSlug = '{{ page.slug }}';
+  const currentName = {{ page.itemName | jsonify }};
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) {}
+
+  const others = list.filter(i => i.slug !== currentSlug);
+  if (others.length > 0) {
+    document.getElementById('recentList').innerHTML = others.slice(0, 8).map(i =>
+      `<a class="recent-item" href="/${i.type || 'drug'}/${i.slug}/">${i.itemName}</a>`
+    ).join('');
+    document.getElementById('recentSection').style.display = 'block';
+  }
+
+  const updated = [{ slug: currentSlug, itemName: currentName, type: 'supplement' }, ...others].slice(0, 10);
+  try { localStorage.setItem(KEY, JSON.stringify(updated)); } catch(e) {}
+})();
 </script>
