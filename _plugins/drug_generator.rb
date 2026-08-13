@@ -1,6 +1,14 @@
 require 'json'
 
 module Jekyll
+  # 검색결과 title이 성분명 괄호 때문에 길어져서 "효능 용법 부작용" 등 핵심 문구가
+  # 잘려나가는 문제 방지. 예: "페니라민정(클로르페니라민말레산염)" -> "페니라민정" (중첩 괄호도 통째로 제거)
+  def self.display_name(item_name)
+    name = (item_name || '').to_s
+    stripped = name.sub(/\s*\(.*\)\s*\z/, '').strip
+    stripped.empty? ? name : stripped
+  end
+
   class DrugPageGenerator < Generator
     safe true
     priority :normal
@@ -54,7 +62,7 @@ module Jekyll
       self.read_yaml(File.join(@base, '_layouts'), 'drug.html')
       self.data.merge!(drug)
       self.data['layout']      = 'drug'
-      self.data['title']       = "#{drug['itemName']} 효능 용법 부작용"
+      self.data['title']       = "#{Jekyll.display_name(drug['itemName'])} 효능 용법 부작용"
       self.data['description'] = build_drug_desc(drug)
     end
 
@@ -63,7 +71,7 @@ module Jekyll
     def build_drug_desc(drug)
       return drug['seoDescription'] if drug['seoDescription'].to_s.length > 10
       efcy = (drug['efcyQesitm'] || '').strip[0, 80]
-      name = drug['itemName'] || ''
+      name = Jekyll.display_name(drug['itemName'])
       comp = drug['entpName'] || ''
       desc = "#{name}(#{comp}) 효능, 용법, 주의사항, 부작용을 확인하세요."
       desc += " #{efcy}" if efcy.length > 0
@@ -82,7 +90,7 @@ module Jekyll
       self.read_yaml(File.join(@base, '_layouts'), 'supplement.html')
       self.data.merge!(sup)
       self.data['layout']      = 'supplement'
-      self.data['title']       = "#{sup['itemName']} 기능성 효능 섭취법"
+      self.data['title']       = "#{Jekyll.display_name(sup['itemName'])} 기능성 효능 섭취법"
       self.data['description'] = build_sup_desc(sup)
     end
 
@@ -90,7 +98,7 @@ module Jekyll
 
     def build_sup_desc(sup)
       return sup['seoDescription'] if sup['seoDescription'].to_s.length > 10
-      name   = sup['itemName'] || ''
+      name   = Jekyll.display_name(sup['itemName'])
       fnclty = (sup['primaryFnclty'] || '').strip[0, 80]
       desc   = "#{name} 건강기능식품의 기능성, 일일 섭취량, 주의사항을 확인하세요."
       desc  += " #{fnclty}" if fnclty.length > 0
