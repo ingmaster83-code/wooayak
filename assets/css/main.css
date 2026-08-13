@@ -324,6 +324,10 @@ img { max-width: 100%; }
 
 /* ===== 광고 ===== */
 .ad-slot { margin: 24px 0; text-align: center; }
+.ad-placeholder {
+  background: #F1F5F9; border: 1px dashed #CBD5E1; border-radius: var(--radius-sm, 6px);
+  color: #94A3B8; font-size: .82rem; padding: 14px; text-align: center;
+}
 
 /* ===== 메인 탭 ===== */
 .main-tabs {
