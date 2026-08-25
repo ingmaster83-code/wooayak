@@ -87,6 +87,19 @@ layout: default
       <h2>상호작용</h2>
       <p>{{ page.intrcQesitm }}</p>
       {% endif %}
+      {% if page.durTaboo and page.durTaboo.size > 0 %}
+      <h2>⚠️ 함께 먹으면 안 되는 약 ({{ page.durTaboo.size }}개)</h2>
+      <p class="dur-taboo-note">아래 약물과 함께 복용하면 부작용 위험이 있어 병용이 금지됩니다. 다른 약을 복용 중이라면 반드시 의사·약사와 상담하세요.</p>
+      <div class="dur-taboo-list">
+        {% for t in page.durTaboo %}
+        <div class="dur-taboo-item">
+          <div class="dur-taboo-name">{{ t.mixtureItemName }}</div>
+          <div class="dur-taboo-meta">{{ t.mixtureEntpName }}{% if t.prohbtContent and t.prohbtContent != "" %} · {{ t.prohbtContent }}{% endif %}</div>
+        </div>
+        {% endfor %}
+      </div>
+      <p class="dur-taboo-source">출처: 식품의약품안전처 의약품안전사용서비스(DUR)</p>
+      {% endif %}
     </div>
 
     <div class="tab-panel" id="tab-side-effect">

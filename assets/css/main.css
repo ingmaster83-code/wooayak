@@ -254,6 +254,20 @@ img { max-width: 100%; }
 }
 .no-info { color: var(--text-muted); font-size: .92rem; }
 
+.dur-taboo-note { color: #7F1D1D; font-size: .88rem; margin-bottom: 10px; }
+.dur-taboo-list {
+  display: flex; flex-direction: column; gap: 8px;
+  max-height: 360px; overflow-y: auto;
+  margin-bottom: 8px;
+}
+.dur-taboo-item {
+  background: #FFF5F5; border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0; padding: 10px 14px;
+}
+.dur-taboo-name { font-weight: 700; font-size: .92rem; color: var(--text); }
+.dur-taboo-meta { font-size: .82rem; color: var(--text-muted); margin-top: 2px; }
+.dur-taboo-source { font-size: .78rem; color: var(--text-muted); margin-top: 4px; }
+
 /* ===== 알약 역검색 ===== */
 .identify-page { max-width: 860px; margin: 0 auto; padding: 30px 20px 60px; }
 .identify-page h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
