@@ -18,7 +18,12 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-API_KEY = "9490b1d34e92aa9e25b32a4cff1438fc7b9c71e5d332413916a391e867f61e86"
+def _need_key():
+    import os, sys
+    return os.environ.get("DATA_GO_KR_API_KEY") or sys.exit("환경변수 DATA_GO_KR_API_KEY 가 필요합니다(키를 코드에 넣지 마세요).")
+
+
+API_KEY = _need_key()
 BASE_URL = "https://apis.data.go.kr/1471000/DURPrdlstInfoService03/getUsjntTabooInfoList03"
 
 DRUGS_PATH = Path(__file__).parent.parent / "_rawdata" / "drugs.json"
