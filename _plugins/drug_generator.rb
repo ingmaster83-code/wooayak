@@ -16,11 +16,13 @@ module Jekyll
     def generate(site)
       drugs       = load_json(site, '_rawdata/drugs.json')
       supplements = load_json(site, '_rawdata/supplements.json')
+      price_map   = load_hash(site, '_rawdata/drug_prices.json')
 
       if drugs.any?
         Jekyll.logger.info "DrugGenerator:", "#{drugs.size}개 약품 페이지 생성 중..."
         drugs.each do |drug|
           next if drug['slug'].to_s.strip.empty?
+          drug['priceRows'] = price_map[drug['itemSeq'].to_s] if price_map[drug['itemSeq'].to_s]
           site.pages << DrugPage.new(site, drug)
         end
       end
@@ -40,6 +42,15 @@ module Jekyll
     end
 
     private
+
+    def load_hash(site, path)
+      file = File.join(site.source, path)
+      return {} unless File.exist?(file)
+      JSON.parse(File.read(file, encoding: 'utf-8'))
+    rescue => e
+      Jekyll.logger.warn "DrugGenerator:", "#{path} 로드 실패: #{e.message}"
+      {}
+    end
 
     def load_json(site, path)
       file = File.join(site.source, path)

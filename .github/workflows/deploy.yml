@@ -21,6 +21,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 약 가격 비교 페이지 생성 (price/, sitemap-price-*.xml, _rawdata/drug_prices.json)
+        run: python scripts/build_price_site.py
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:

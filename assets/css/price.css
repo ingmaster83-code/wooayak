@@ -1,0 +1,38 @@
+/* 약 가격 비교 페이지 전용 스타일 */
+.price-page { max-width: 960px; margin: 0 auto; padding: 0 20px 60px; }
+.price-page .breadcrumb { padding: 14px 0 0; font-size: .83rem; color: #6B7280; display: flex; gap: 6px; flex-wrap: wrap; }
+.price-page .page-head { padding: 22px 0 8px; }
+.price-page .page-head h1 { font-size: 1.55rem; font-weight: 800; line-height: 1.35; }
+.price-page .page-head p { color: #6B7280; margin-top: 6px; font-size: .92rem; }
+.price-page .lead { color: #374151; line-height: 1.85; font-size: .95rem; margin: 8px 0 14px; }
+.price-page h2.group-title { font-size: 1.1rem; font-weight: 800; margin: 26px 0 10px; }
+.price-page .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin: 14px 0; }
+.price-page .stat { background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 10px 14px; }
+.price-page .stat small { display: block; color: #6B7280; font-size: .76rem; }
+.price-page .stat b { font-size: 1.15rem; font-weight: 800; }
+.tbl-wrap { overflow-x: auto; margin: 6px 0 4px; }
+.ptbl { width: 100%; border-collapse: collapse; font-size: .88rem; background: #fff; border: 1px solid #E5E7EB; }
+.ptbl th { background: #F3F4F6; text-align: left; padding: 9px 11px; font-size: .82rem; white-space: nowrap; }
+.ptbl td { padding: 9px 11px; border-top: 1px solid #F3F4F6; vertical-align: top; line-height: 1.5; }
+.ptbl th.num, .ptbl td.num { text-align: right; white-space: nowrap; }
+.ptbl td a { font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.chip { display: inline-block; background: #fff; border: 1px solid #E5E7EB; border-radius: 999px; padding: 6px 14px; font-size: .86rem; font-weight: 600; color: #374151; }
+.chip:hover { border-color: #10B981; color: #047857; text-decoration: none; }
+.note-box { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 12px; padding: 12px 16px; font-size: .86rem; color: #7C2D12; margin: 16px 0; line-height: 1.7; }
+.note { font-size: .85rem; color: #6B7280; margin: 8px 0; }
+.faq-block { margin-top: 30px; }
+.faq-block h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 10px; }
+.faq-block details { margin-bottom: 8px; border: 1px solid #E5E7EB; border-radius: 10px; background: #fff; padding: 2px 14px; }
+.faq-block summary { cursor: pointer; font-weight: 600; padding: 10px 0; font-size: .93rem; }
+.faq-block p { color: #374151; line-height: 1.8; font-size: .9rem; padding-bottom: 12px; }
+.hero-search { position: relative; margin: 14px 0; }
+.hero-search input { width: 100%; padding: 14px 16px; border: 2px solid #10B981; border-radius: 12px; font-size: 1rem; font-family: inherit; }
+.sr-list { position: absolute; left: 0; right: 0; top: 100%; background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.12); z-index: 20; max-height: 360px; overflow-y: auto; display: none; }
+.sr-list a { display: block; padding: 9px 14px; color: #1F2937; border-bottom: 1px solid #F3F4F6; font-size: .92rem; }
+.sr-list a small { color: #6B7280; margin-left: 6px; }
+.sr-list a:hover { background: #ECFDF5; text-decoration: none; }
+.price-box { background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 12px; padding: 12px 16px; margin: 16px 0; }
+.price-box h2 { font-size: 1rem; margin: 0 0 6px; }
+.price-box a { font-weight: 600; }
+@media (max-width: 640px) { .price-page .page-head h1 { font-size: 1.3rem; } }

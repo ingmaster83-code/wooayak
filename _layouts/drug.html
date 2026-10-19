@@ -121,6 +121,19 @@ layout: default
     </div>
   </div>
 
+  <!-- 보험 상한금액 (약가기준정보 연결) -->
+  {% if page.priceRows and page.priceRows.size > 0 %}
+  <div class="price-box">
+    <h2>💰 건강보험 상한금액</h2>
+    <table class="drug-price-tbl" style="width:100%;font-size:.9rem;border-collapse:collapse">
+      {% for r in page.priceRows %}
+      <tr><td style="padding:4px 0"><a href="/price/drug/{{ r.slug }}/">{{ r.name }}{% if r.spec != "" %} <small>({{ r.spec }})</small>{% endif %}</a></td><td style="text-align:right;white-space:nowrap">{{ r.price }}/{{ r.unit }}</td></tr>
+      {% endfor %}
+    </table>
+    <p style="font-size:.8rem;color:#6B7280;margin-top:6px">같은 성분 약의 가격 비교는 위 제품명을 눌러 확인하세요. 실제 약국 판매가와 다를 수 있습니다. 출처: 건강보험심사평가원</p>
+  </div>
+  {% endif %}
+
   <!-- 원본 정보 링크 -->
   <div class="drug-source-links">
     <span class="source-label">공식 출처</span>

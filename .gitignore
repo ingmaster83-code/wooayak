@@ -9,3 +9,8 @@ __pycache__/
 
 .env
 _data/drugs_backup*.json
+_rawdata/prices.json
+_rawdata/cache_prices/
+price/
+sitemap-price-*.xml
+_rawdata/drug_prices.json
